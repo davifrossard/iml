@@ -1,0 +1,369 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  This Beamer template was created by Cameron Bracken.
+%%  Anyone can freely use or modify it for any purpose
+%%  without attribution.
+%%
+%%  Last Modified: January 9, 2009
+%%
+
+\documentclass[xcolor=x11names,compress]{beamer}
+
+%% General document %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage[canadian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+\usepackage{mathtools}
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\usepackage{epstopdf}
+\usepackage{hyperref}
+\usepackage[export]{adjustbox}
+\usepackage{animate}
+\graphicspath{{img/}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%% Beamer Layout %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\useoutertheme[subsection=false,shadow]{miniframes}
+\useinnertheme{default}
+\usefonttheme{serif}
+\usepackage{palatino}
+\urlstyle{same}
+\setbeamerfont{title like}{shape=\scshape}
+\setbeamerfont{frametitle}{shape=\scshape}
+
+\setbeamercolor*{lower separation line head}{bg=DeepSkyBlue4} 
+\setbeamercolor*{normal text}{fg=black,bg=white} 
+\setbeamercolor*{alerted text}{fg=red} 
+\setbeamercolor*{example text}{fg=black} 
+\setbeamercolor*{structure}{fg=black} 
+ 
+\setbeamercolor*{palette tertiary}{fg=black,bg=black!10} 
+\setbeamercolor*{palette quaternary}{fg=black,bg=black!10} 
+
+\renewcommand{\(}{\begin{columns}}
+\renewcommand{\)}{\end{columns}}
+\newcommand{\<}[1]{\begin{column}{#1}}
+\renewcommand{\>}{\end{column}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\scshape Introduction}
+\begin{frame}
+\title{Introduction to Machine Learning}
+\subtitle{Linear Regression}
+\author{
+	Davi Frossard\\
+	{\it Federal University of Espirito Santo \\ University of Toronto}\\
+}
+\date{
+    \vspace{-2em}\\
+    \includegraphics[width=0.5\columnwidth]{linreg.png}\\[-1ex]
+    {\tiny Credit: {\itshape \url{http://bit.ly/2cwKaex}}}
+    \\
+	\today
+}
+\titlepage
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Summary}
+\tableofcontents
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Overview}
+\begin{frame}{Linear Regression}
+	\begin{itemize}
+		\item Find a relationship between a dependent variable and a set of independent variables.
+		\item In its simplest form, consists of finding a function $\boldsymbol{y} = w.\boldsymbol{x} + b$ that fits the data.
+		\begin{center}
+			\adjincludegraphics[width=0.7\columnwidth]{lreg_ex}
+		\end{center}
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Real Estate Example}
+\begin{frame}{Real Estate Example}
+	\begin{itemize}
+		\item We may want to predict the cost of a house given its area.
+		\item Gather real estate data from many listings and fit a curve.
+	\end{itemize}
+	\begin{center}
+	   \includegraphics[width=0.6\columnwidth]{real_estate}\\[-1ex]
+	   {\tiny Credit: {\itshape \url{http://efs.com.sg/common-pitfalls-of-real-estate-investing-and-how-to-avoid-them/}}}
+	\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{The Problem}
+\begin{frame}{The Problem}
+	\begin{itemize}
+		\item We want the parameters $w$ and $b$ in $\boldsymbol{y} = w.\boldsymbol{x} + b$ such that the \textit{distance} between the points and the fitted line is minimized.
+		\item In other words, we want to minimize the average error.
+		\begin{center}
+			\adjincludegraphics[width=0.6\columnwidth]{lreg}
+		\end{center}
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{The Problem}
+	\begin{itemize}
+		\item You might have seen it before as a solution to a linear problem, obtained by setting the derivative of the error to zero:
+	\end{itemize}
+	\begin{gather*}
+		\beta = (X^TX)^{-1}X^TY
+	\end{gather*}
+	\begin{itemize}
+		\item Inversion does not scale well with the size of the matrix ($\thickapprox O(n^3)$).
+		\item In our realm of big data, this rapidly gets out of hand.
+		\item We need \textbf{Gradient Descent}.
+	\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\scshape Gradient Descent}
+\begin{frame}{Gradient Descent}
+	\begin{itemize}
+		\item Used to minimize \textbf{differentiable} functions like Newton's method, but does not require second order derivatives (\textit{Hessian}).
+		\item Recall that at any point in a surface, the gradient at that point always points in the direction of \textbf{steepest ascent} and at a minimum, it will be \textbf{zero}.
+		\item Like a ball rolling to the bottom of a bowl.
+		\begin{center}
+			\includegraphics[width=0.9\columnwidth]{sgd_optimal.png}\\[-1ex]
+			{\tiny Credit: {\itshape \url{http://iamtrask.github.io/2015/07/27/python-network-part2/}}}
+		\end{center}
+	\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Gradient Descent}
+	\begin{itemize}
+		\item Take \textbf{weighted} steps at each time in the direction of \textbf{steepest descent}.
+		\item We call this weight the \textbf{learning rate} ($\alpha$). I.e.:
+	\end{itemize}
+	\begin{gather*}
+		x \leftarrow x - \alpha \frac{F(x)}{x}
+	\end{gather*}
+	\begin{center}
+		\animategraphics[controls,width=0.47\linewidth]{12}{sgd_anim/sgd-}{1}{51}\\
+		{\tiny Credit: {\itshape \url{http://scs.ryerson.ca/~aharley/neural-networks/}}}
+	\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{$\alpha$ Sensitivity}
+\begin{frame}{$\alpha$ Sensitivity}
+	\begin{itemize}
+		\item $\alpha$ is a sensitive parameter in the sense that if set too high, may cause divergence.
+		\item Many variants of gradient descent propose solutions to this problem.
+	\end{itemize}
+	\begin{center}
+		\animategraphics[controls,width=0.47\linewidth]{12}{sgd_anim_div/sgd-}{1}{51}\\
+		{\tiny Credit: {\itshape \url{http://scs.ryerson.ca/~aharley/neural-networks/}}}
+	\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Gradient Descent in Linear Regression}
+\begin{frame}{Gradient Descent in Linear Regression}
+	\begin{itemize}
+		\item To learn our linear regression model we need to set the values of $w$ and $b$ in $\boldsymbol{y} = w.\boldsymbol{x} + b$ that minimize the average error.
+		\item If we use L2-Distance, our error becomes: 
+	\end{itemize}
+	\begin{gather*}
+	E(x,w,b) = \dfrac{1}{n}\sum_{i = 0}^n \Big(y_i - (wx_i + b)\Big)^2
+	\end{gather*}
+	\begin{itemize}
+		\item In \textbf{batch} gradient descent we evaluate the gradient over all $\boldsymbol{x}$ in order to decide our next step. I.e.:
+	\end{itemize}
+	\begin{gather*}
+	w \leftarrow w - \alpha \frac{\partial E(x,w,b)}{\partial w}\\
+	b \leftarrow b - \alpha \frac{\partial E(x,w,b)}{\partial b}
+	\end{gather*}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Gradients}
+\begin{frame}{Model Gradients}
+	\begin{itemize}
+		\item Weight gradient:
+	\end{itemize}
+	\begin{align*}
+	\dfrac{\partial E(x,w,b)}{\partial w} =& \dfrac{\partial}{\partial w} \frac{1}{n}\sum_{i = 0}^n \Big(y_i - (wx_i + b)\Big)^2\\
+	& \frac{1}{n}\sum_{i = 0}^n \dfrac{\partial}{\partial w}\Big(y_i - (wx_i + b)\Big)^2\\
+	& \frac{1}{n}\sum_{i = 0}^n 2x_i \Big(y_i - (wx_i + b)\Big)
+	\end{align*}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Model Gradients}
+	\begin{itemize}
+		\item Bias gradient:
+	\end{itemize}
+	\begin{align*}
+	\dfrac{\partial E(x,w,b)}{\partial b} =& \dfrac{\partial}{\partial b} \frac{1}{n}\sum_{i = 0}^n \Big(y_i - (wx_i + b)\Big)^2\\
+	& \frac{1}{n}\sum_{i = 0}^n \dfrac{\partial}{\partial b}\Big(y_i - (wx_i + b)\Big)^2\\
+	& \frac{1}{n}\sum_{i = 0}^n 2 \Big(y_i - (wx_i + b)\Big)
+	\end{align*}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Stochastic Gradient Descent}
+\begin{frame}{Stochastic Gradient Descent}
+	\begin{itemize}
+		\item With that, our previous update equations become:
+	\end{itemize}
+	\begin{gather*}
+	w \leftarrow w - \alpha \frac{1}{n}\sum_{i = 0}^n x_i \Big(y_i - (wx_i + b)\Big)\\
+	b \leftarrow b - \alpha \frac{1}{n}\sum_{i = 0}^n \Big(y_i - (wx_i + b)\Big)
+	\end{gather*}
+	\begin{itemize}
+		\item We don't need to go through all the $x$ in the data, instead we can randomly sample a much smaller \textbf{mini-batch} of $x$ at each step.
+		\item Every time we go through the entire dataset, one mini-batch at a time, we finish an \textbf{epoch}.
+	\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Intercept Data}
+\begin{frame}{Intercept Data}
+	\begin{itemize}
+		\item We can use a small trick so that the gradients of $w$ and $b$ have the same form.
+		\item We treat $x$ as a vector of features, such that in our polynomial model it represents $\boldsymbol{x} = [x^1, x^0]$.
+		\item Mathematically $\boldsymbol{x}$ is just a vector, therefore the model becomes $y = \boldsymbol{w}\cdot\boldsymbol{x}$, where $\boldsymbol{w}$ represents our previous $[w, b]$.
+		\item Our gradients now reduce to simply:
+	\end{itemize}
+	\begin{gather*}
+	\dfrac{\partial E(x,w,b)}{\partial w} = \frac{1}{n}\sum_{i = 0}^n \boldsymbol{x}_i \cdot \Big(y_i - (\boldsymbol{w} \cdot \boldsymbol{x}_i)\Big)
+	\end{gather*}
+	\begin{itemize}
+		\item \textbf{VECTORIZE CODE!}
+	\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Pseudocode}
+\begin{frame}{Pseudocode}
+	\begin{algorithm}[H]
+		\vspace{5px}
+		\KwIn{Function $E(x, \boldsymbol{w})$ \newline
+			  Learning rate $\alpha$}
+		
+		\vspace{10px}
+		
+		\Repeat{stopping condition}{
+			Select random mini-batch $x'$\\
+			$\boldsymbol{w} \leftarrow \boldsymbol{w} - \alpha \frac{\partial E(x',\boldsymbol{w})}{\partial \boldsymbol{w}}$ \\
+		} 
+	\end{algorithm}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\scshape Linear Regression}
+\begin{frame}{Linear Regression}
+	\begin{center}
+		\animategraphics[controls,width=0.8\linewidth]{12}{lreg_anim/lreg_anim-}{0}{16}
+	\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Minimum Found}
+\begin{frame}{Optimization Solution}
+	\begin{center}
+		\includegraphics[width=0.9\columnwidth]{contour_plot}
+	\end{center}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\scshape Multiple Linear Regression}
+\begin{frame}{Multiple Linear Regression}
+	\begin{itemize}
+		\item Using the same trick as the intercept data, we can also extend our model to higher order polynomials.
+		\item Simply make it so that $\boldsymbol{x} = [x^n, ..., x^1, x^0]$
+		\item A properly vectorized code should remain roughly the same.
+		\item Generally, higher polynomials will have smaller costs.
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\scshape Fitted Polynomial}
+\begin{frame}{Fifth Order Polynomial}
+	\begin{center}
+		\animategraphics[controls,width=0.8\linewidth]{12}{multiple_lreg_anim/mlreg-}{0}{12}
+	\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\scshape Overfit}
+\begin{frame}{Old Friend Overfit}
+	\begin{itemize}
+		\item Have to be careful not to use too high polynomials.
+	\end{itemize}
+	\begin{center}
+		\includegraphics[width=0.85\columnwidth]{overfit}
+	\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\scshape Questions}
+\begin{frame}{Questions}
+	\begin{enumerate}
+		\item Why don't we invert matrices to perform linear regression?
+		\item What is pointed by the gradient at any given point of a surface?
+		\item How high should our learning rate ($\alpha$) be? Could you propose a way to reduce its sensitivity?
+		\item Do we need to use our entire dataset at each gradient descent step?
+		\item Suppose we want to predict a person's longevity and have the following data: Yearly health checkups, tobacco consumption, blood pressure levels, physical activity and university degree. Should we use all the data that is available to us?
+		\item Can we perform linear regression from a strictly probabilistic perspective? 
+	\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Maximum Likelihood Estimator}
+	\begin{center}
+		\includegraphics[width=\columnwidth]{MLE}\\[-1ex]
+		{\tiny Credit: {\itshape Applied Linear Statistical Models 5e (2005)}}
+	\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Flavours of Gradient Descent}
+	\begin{center}
+		\animategraphics[controls,width=0.5\linewidth]{12}{gds_anim/gds-}{0}{118}\\
+		{\tiny Credit: {\itshape \url{http://www.denizyuret.com/2015/03/alec-radfords-animations-for.html}}}
+	\end{center}
+\end{frame}
+\end{document}

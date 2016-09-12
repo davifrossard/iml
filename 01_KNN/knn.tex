@@ -1,0 +1,245 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  This Beamer template was created by Cameron Bracken.
+%%  Anyone can freely use or modify it for any purpose
+%%  without attribution.
+%%
+%%  Last Modified: January 9, 2009
+%%
+
+\documentclass[xcolor=x11names,compress]{beamer}
+
+%% General document %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage[canadian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+\usepackage{mathtools}
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\usepackage{epstopdf}
+\usepackage{hyperref}
+\usepackage[export]{adjustbox}
+\graphicspath{{img/}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%% Beamer Layout %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\useoutertheme[subsection=false,shadow]{miniframes}
+\useinnertheme{default}
+\usefonttheme{serif}
+\usepackage{palatino}
+\urlstyle{same}
+\setbeamerfont{title like}{shape=\scshape}
+\setbeamerfont{frametitle}{shape=\scshape}
+
+\setbeamercolor*{lower separation line head}{bg=DeepSkyBlue4} 
+\setbeamercolor*{normal text}{fg=black,bg=white} 
+\setbeamercolor*{alerted text}{fg=red} 
+\setbeamercolor*{example text}{fg=black} 
+\setbeamercolor*{structure}{fg=black} 
+ 
+\setbeamercolor*{palette tertiary}{fg=black,bg=black!10} 
+\setbeamercolor*{palette quaternary}{fg=black,bg=black!10} 
+
+\renewcommand{\(}{\begin{columns}}
+\renewcommand{\)}{\end{columns}}
+\newcommand{\<}[1]{\begin{column}{#1}}
+\renewcommand{\>}{\end{column}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\scshape Introduction}
+\begin{frame}
+\title{Introduction to Machine Learning}
+\subtitle{\textit{k} Nearest Neighbours}
+\author{
+	Davi Frossard\\
+	{\it Federal University of Espirito Santo \\ University of Toronto}\\
+}
+\date{
+    \vspace{-2em}\\
+    \includegraphics[width=0.6\columnwidth]{knn.png}\\[-1ex]
+    {\tiny Credit: {\itshape \url{http://bdewilde.github.io/blog/blogger/2012/10/26/classification-of-hand-written-digits-3/}}}
+    \\
+	\today
+}
+\titlepage
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Summary}
+\tableofcontents
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{The Problem}
+\begin{frame}{The Problem}
+	\begin{itemize}
+		\item Given a set of labelled data (\textbf{training set}), predict the labels of a set of unlabelled data (\textbf{test set}). 
+		\item Example:
+		\begin{itemize}
+			\item Training set:
+			\begin{itemize}
+				\item[] $(x_1^{(1)}, x_2^{(1)}, x_3^{(1)}, ..., x_m^{(1)}) \rightarrow y^{(1)}$
+				\item[] $(x_1^{(2)}, x_2^{(2)}, x_3^{(2)}, ..., x_m^{(2)}) \rightarrow y^{(2)}$
+				\item[] $\vdots$
+				\item[] $(x_1^{(n)}, x_2^{(n)}, x_3^{(n)}, ..., x_m^{(n)}) \rightarrow y^{(n)}$
+			\end{itemize}
+			\item Test set:
+			\begin{itemize}
+				\item[] $(x_1^{(n+1)}, x_2^{(n+1)}, x_3^{(n+1)}, ..., x_m^{(n+1)}) \rightarrow y^{(n+1)} = \ ?$
+				\item[] $(x_1^{(n+2)}, x_2^{(n+2)}, x_3^{(n+2)}, ..., x_m^{(n+2)}) \rightarrow y^{(n+2)} = \ ?$
+				\item[] $\vdots$
+				\item[] $(x_1^{(n+k)}, x_2^{(n+k)}, x_3^{(n+k)}, ..., x_m^{(n+k)}) \rightarrow y^{(n+k)} = \ ?$
+			\end{itemize}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Face Recognition Example}
+\begin{frame}{Face Recognition Example}
+	\begin{itemize}
+		\item Correctly recognize the person in a photo.
+		\item Training Set: Photos of people with names ("labels").
+		\item Test Set: Photos of people whose name we want to predict.
+		\begin{itemize}
+			\item Generally we also know the labels in the test set, but we pretend we don't. We can then predict the labels using our algorithm and compare the output with the ground-truth labels.
+		\end{itemize}
+		\item The performance of the algorithm can be estimated using the proportion of examples in the test set that were correctly classified.
+	\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\scshape Algorithm}
+\subsection{The Idea}
+\begin{frame}{The Idea}
+	\begin{itemize}
+		\item \textit{"Tell me with whom you walk and I will tell you who you are".}
+		\item Find the \textit{k} nearest neighbours in the training set of each example and output the majority label.
+		\item Neighbourhood estimated using a distance metric.
+		\begin{itemize}
+			\item \makebox[7cm][l]{$|x^{(1)} - x^{(2)}| = \sum_i |x^{(1)}_i - x^{(2)}_i|$} ($L_1$ distance)
+			\item \makebox[7cm][l]{$|x^{(1)} - x^{(2)}| = \sqrt{\sum_i (x^{(1)}_i - x^{(2)}_i)^2}$} ($L_2$ distance)
+			\item \makebox[7cm][l]{$|x^{(1)} - x^{(2)}| = \max\limits_{i} |x^{(1)}_i - x^{(2)}_i|$} ($L_\infty$ distance)
+			\item $\vdots$
+			\item \makebox[7cm][l]{$|x^{(1)} - x^{(2)}| = \left(\sum_i (|x^{(1)}_i - x^{(2)}_i|)^p\right)^{1/p}$} ($L_p$ distance)
+			\item By default we use the $L_2$ distance.
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Pseudocode}
+\begin{frame}{Pseudocode}
+	\begin{algorithm}[H]
+		\vspace{5px}
+		\KwIn{Training set $T$ \newline
+			  Test set $S$}
+		
+		\vspace{10px}
+		
+		\ForEach{$s_i \in S$}{
+			\ForEach{$t_i \in T$}{
+				Compute distance $d(s_i,t_i)$
+			}
+			Sort($T$, key = $d(s_i,t_i)$) \\
+			$s_i.label$ = max($T[:k].label$, key = count)
+		} 
+	\end{algorithm}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\scshape Visualization}
+\subsection{1 Nearest Neighbor}
+\begin{frame}{1 Nearest Neighbor}
+	\begin{center}
+		\adjincludegraphics[width=0.45\columnwidth,trim={0 {.05\height} {.68\width} {.05\height}},clip]{knn}
+	\end{center}
+	\begin{itemize}
+		\item Training set error is zero.
+		\item Jagged \textbf{decision boundary}.
+		\item \textbf{Overfitted}!
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{5 Nearest Neighbors}
+\begin{frame}{5 Nearest Neighbors}
+	\begin{center}
+		\adjincludegraphics[width=0.45\columnwidth,trim={{.34\width} {.05\height} {.34\width} {.05\height}},clip]{knn}
+	\end{center}
+	\begin{itemize}
+		\item Smoother decision boundary
+		\item Less "islands"
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{25 Nearest Neighbors}
+\begin{frame}{25 Nearest Neighbors}
+	\begin{center}
+		\adjincludegraphics[width=0.45\columnwidth,trim={{.68\width} {.05\height} 0 {.05\height}},clip]{knn}
+	\end{center}
+	\begin{itemize}
+		\item Even smoother decision boundary
+		\item Some training examples miss-classified.
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\scshape Choice of K}
+\subsection{The K in Question}
+\begin{frame}{The K in Question}
+	\begin{itemize}
+		\item How do we determine the optimal K for our dataset?
+		\begin{itemize}
+			\item Could try different values and see which works best for the test set.
+			\item Problem: The selected K will be best for the \textit{particular} test set. So it's an overestimate of how well we will perform in new data. 
+		\end{itemize}
+		\item \textbf{Validation Set}: Create a set separate from training and test used to tune \textbf{hyperparameters} such as \textit{K}.
+		\begin{itemize}
+			\item Select \textit{K} based on the performance in the validation set.
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{The K in Question}
+	\begin{center}
+		\includegraphics[width=0.85\columnwidth]{k_sweep.png}
+	\end{center}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\scshape Questions}
+\begin{frame}{Questions}
+	\begin{enumerate}
+		\item What does the optimal K say about the data?
+		\item Generally, why not pick a K too large?
+		\item Generally, why not pick a K too small?
+	\end{enumerate}
+\end{frame}
+
+\end{document}
