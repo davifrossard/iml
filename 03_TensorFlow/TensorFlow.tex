@@ -1,0 +1,365 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  This Beamer template was created by Cameron Bracken.
+%%  Anyone can freely use or modify it for any purpose
+%%  without attribution.
+%%
+%%  Last Modified: January 9, 2009
+%%
+
+\documentclass[xcolor=x11names,compress]{beamer}
+
+%% General document %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage[canadian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+\usepackage{mathtools}
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\usepackage{epstopdf}
+\usepackage{hyperref}
+\usepackage[export]{adjustbox}
+\usepackage{animate}
+\usepackage{minted}
+\graphicspath{{img/}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%% Beamer Layout %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\useoutertheme[subsection=false,shadow]{miniframes}
+\useinnertheme{default}
+\usefonttheme{serif}
+\usepackage{palatino}
+\urlstyle{same}
+\setbeamerfont{title like}{shape=\scshape}
+\setbeamerfont{frametitle}{shape=\scshape}
+
+\setbeamercolor*{lower separation line head}{bg=DeepSkyBlue4} 
+\setbeamercolor*{normal text}{fg=black,bg=white} 
+\setbeamercolor*{alerted text}{fg=red} 
+\setbeamercolor*{example text}{fg=black} 
+\setbeamercolor*{structure}{fg=black} 
+ 
+\setbeamercolor*{palette tertiary}{fg=black,bg=black!10} 
+\setbeamercolor*{palette quaternary}{fg=black,bg=black!10} 
+
+\renewcommand{\(}{\begin{columns}}
+\renewcommand{\)}{\end{columns}}
+\newcommand{\<}[1]{\begin{column}{#1}}
+\renewcommand{\>}{\end{column}}
+\addtobeamertemplate{navigation symbols}{}{%
+	\usebeamerfont{footline}%
+	\usebeamercolor[fg]{footline}%
+	\hspace{1.5ex}%
+	\insertframenumber/\inserttotalframenumber
+}
+\usemintedstyle{tango}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\scshape Introduction}
+\begin{frame}
+\title{Introduction to Machine Learning}
+\subtitle{TensorFlow}
+\author{
+	Davi Frossard\\
+	{\it Federal University of Espirito Santo \\ University of Toronto}\\
+}
+\date{
+    \vspace{-2em}\\
+    \includegraphics[width=0.5\columnwidth]{tf_logo}\\[-1ex]
+    {\tiny Credit: {\itshape \url{https://www.tensorflow.org}}\\[-2ex]
+    \textcolor{gray}{TensorFlow, the TensorFlow logo and any related marks are trademarks of Google Inc.}}
+    \\
+	\today
+}
+\titlepage
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Summary}
+\tableofcontents
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\scshape TensorFlow}
+\begin{frame}{TensorFlow}
+	\begin{itemize}
+		\item Initially developed by the Google Brain Team.
+		\item Supports Python and C++.
+		\item Open sourced in November 9\textsuperscript{th}, 2015.
+		\item Used by Google in Speech Recognition, Gmail, Google Photos, Search.
+		\item Recently adopted by the DeepMind team (AlphaGo).
+		\item Currently the most popular machine learning framework.
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{TensorFlow}
+	\begin{center}
+		\includegraphics[width=0.9\columnwidth]{tf_usage}
+	\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Features}
+\begin{frame}{Features}
+	\begin{itemize}
+		\item Automatic Differentiation!
+		\item Same code can be deployed to GPU or CPU.
+		\item Parallelization over multiple machines.
+		\item Easy deployment to Android.
+		\item TensorBoard - Visualize your architectures.
+	\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{TensorBoard}
+\begin{frame}{TensorBoard}
+	\begin{center}
+		\includegraphics[width=0.9\columnwidth]{tf_graph}
+	\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Computation Graph}
+\begin{frame}{Computation Graph}
+	\begin{itemize}
+		\item TensorFlow works with computation graphs.
+		\item Nodes are operations, edges are data.
+		\item If \textbf{a} and \textbf{b} are tensors, simply doing \textbf{a}+\textbf{b} will just create a node and not return any numerical result immediately.
+		\item Increases performance.
+		\item Might feel strange at first but rapidly becomes natural.
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Code Example}
+\begin{frame}[fragile]{Code Example}
+	\begin{minted}[mathescape,
+	gobble=1,
+	linenos,
+	fontsize=\scriptsize,
+	framesep=2mm,
+	frame=lines,]{python}
+	
+	import tensorflow as tf
+	
+	a = tf.Variable(1)
+	b = tf.Variable(3)
+	
+	c = a + b
+	d = a * b
+	
+	e = c + d
+	
+	sess = tf.InteractiveSession()
+	init = tf.initialize_all_variables()
+	init.run()
+	e.eval()
+	\end{minted}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Code Example}
+	\begin{center}
+		\includegraphics[width=\columnwidth]{graph}
+	\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Code Example 2}
+\begin{frame}[fragile]{Code Example \hspace{1ex}{\footnotesize Slightly Different}}
+	\begin{minted}[mathescape,
+	gobble=1,
+	linenos,
+	fontsize=\scriptsize,
+	framesep=2mm,
+	frame=lines,]{python}
+	
+	import tensorflow as tf
+	
+	a = tf.placeholder(tf.float32, [None])
+	b = tf.placeholder(tf.float32, [None])
+	
+	c = a + b
+	d = a * b
+	
+	e = c + d
+	
+	sess = tf.InteractiveSession()
+	init = tf.initialize_all_variables()
+	init.run()
+	e.eval({a: [0,1,2], b: [2,2,2]})
+	\end{minted}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\scshape Linear Regression}
+\begin{frame}[fragile]{Linear Regression in TensorFlow}
+	\begin{minted}[mathescape,
+	gobble=1,
+	linenos,
+	fontsize=\scriptsize,
+	framesep=2mm,
+	frame=lines,]{python}
+	
+	import numpy as np
+	import matplotlib.pyplot as plt
+	import tensorflow as tf
+	
+	# Generate Mock Data
+	data_x = np.linspace(1, 8, 100)[:, np.newaxis]
+	data_y = np.polyval([1, -14, 59, -70], data_x) + 1.5 * np.sin(data_x) + np.random.randn(100, 1)
+	# --------
+	
+	model_order = 5
+	data_x = np.power(data_x, range(model_order))
+	data_x /= np.max(data_x, axis=0) # Normalize inputs
+	
+	order = np.random.permutation(len(data_x))
+	portion = 0.2*len(data_x)
+	test_x = data_x[order[:portion]]
+	test_y = data_y[order[:portion]]
+	train_x = data_x[order[portion:]]
+	train_y = data_y[order[portion:]]
+	\end{minted}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Linear Regression in TensorFlow}
+	\begin{center}
+		\includegraphics[width=0.9\columnwidth]{data}
+	\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{Linear Regression in TensorFlow}
+	\begin{minted}[mathescape,
+	gobble=1,
+	linenos,
+	fontsize=\scriptsize,
+	framesep=2mm,
+	frame=lines,
+	firstnumber=20,
+	tabsize=4]{python}
+	
+	# Input and output placeholders
+	inputs = tf.placeholder(tf.float32, [None, model_order])
+	outputs = tf.placeholder(tf.float32, [None, 1])
+	
+	# Model definition
+	W = tf.Variable(tf.zeros([model_order, 1], dtype=tf.float32))
+	y = tf.matmul(inputs, W)
+	
+	# Optimizer settings
+	learning_rate = tf.Variable(0.5, trainable=False)
+	cost_op = tf.reduce_mean(tf.pow(y-outputs, 2))
+	sgd = tf.train.GradientDescentOptimizer(learning_rate)
+	train_op = sgd.minimize(cost_op)
+	\end{minted}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{Linear Regression in TensorFlow}
+	\begin{center}
+		\includegraphics[width=0.9\columnwidth]{lr_graph}
+	\end{center}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{Linear Regression in TensorFlow}
+	\begin{minted}[mathescape,
+	gobble=1,
+	linenos,
+	fontsize=\tiny,
+	framesep=2mm,
+	frame=lines,
+	firstnumber=33,
+	tabsize=4]{python}
+	
+	epochs = 1
+	last_cost = 0
+	max_epochs = 50000
+	
+	sess = tf.Session() # Create TensorFlow session
+	print "Beginning Training"
+	with sess.as_default():
+		init = tf.initialize_all_variables()
+		sess.run(init)
+		while True:
+			# Execute Gradient Descent
+			sess.run(train_op, feed_dict={inputs: train_x, outputs: train_y})
+			# Keep track of our performance
+			if epochs%100==0:
+				cost = sess.run(cost_op, feed_dict={inputs: train_x, outputs: train_y})
+				print "Epoch: %d - Error: %.4f" %(epochs, cost)
+				# Stopping Condition
+				if abs(last_cost - cost) < 1e-3 or epochs > max_epochs:
+					print "Converged."
+					break
+				last_cost = cost
+			
+			epochs += 1
+	
+		print "w =", W.eval()
+		print "Test Cost =", cost_op.eval({inputs: test_x, outputs: test_y})
+	\end{minted}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{Linear Regression in TensorFlow}
+	\begin{minted}[mathescape,
+	gobble=1,
+	linenos,
+	fontsize=\scriptsize,
+	framesep=2mm,
+	frame=lines,
+	firstnumber=59,
+	tabsize=4]{python}
+	
+	y_model = np.polyval(w[::-1], np.linspace(0,1,200))
+	plt.plot(np.linspace(0,1,200), y_model, c='g', label='Model')
+	plt.scatter(train_x[:,1], train_y, c='b', label='Train Set')
+	plt.scatter(test_x[:,1], test_y, c='r', label='Test Set')
+	plt.grid()
+	plt.legend(loc='upper left')
+	plt.xlabel('X')
+	plt.ylabel('Y')
+	plt.xlim(0,1)
+	plt.show()
+	\end{minted}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Linear Regression in TensorFlow}
+	\begin{center}
+		\includegraphics[width=0.9\columnwidth]{fitted}
+	\end{center}
+\end{frame}
+
+\end{document}
