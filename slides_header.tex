@@ -20,7 +20,6 @@
 \usepackage{hyperref}
 \usepackage[export]{adjustbox}
 \usepackage{animate}
-\usepackage{minted}
 \usepackage{xcolor}
 \usepackage{pgfplots}
 \usetikzlibrary{calc}
@@ -38,14 +37,14 @@
 \setbeamerfont{title like}{shape=\scshape}
 \setbeamerfont{frametitle}{shape=\scshape}
 
-\setbeamercolor*{lower separation line head}{bg=DeepSkyBlue4} 
-\setbeamercolor*{normal text}{fg=black,bg=white} 
-\setbeamercolor*{alerted text}{fg=red} 
-\setbeamercolor*{example text}{fg=black} 
-\setbeamercolor*{structure}{fg=black} 
- 
-\setbeamercolor*{palette tertiary}{fg=black,bg=black!10} 
-\setbeamercolor*{palette quaternary}{fg=black,bg=black!10} 
+\setbeamercolor*{lower separation line head}{bg=DeepSkyBlue4}
+\setbeamercolor*{normal text}{fg=black,bg=white}
+\setbeamercolor*{alerted text}{fg=red}
+\setbeamercolor*{example text}{fg=black}
+\setbeamercolor*{structure}{fg=black}
+
+\setbeamercolor*{palette tertiary}{fg=black,bg=black!10}
+\setbeamercolor*{palette quaternary}{fg=black,bg=black!10}
 
 \renewcommand{\(}{\begin{columns}}
 \renewcommand{\)}{\end{columns}}
@@ -55,10 +54,12 @@
 
 \setbeamerfont{footline}{size=\fontsize{6}{0}\selectfont}
 \setbeamercolor{footline}{fg=black!50}
-
 \setbeamertemplate{footline}{
 	\parbox{\paperwidth}{\hspace*{5pt}\url{http://www.cs.toronto.edu/~frossard}\hfill
 		\insertframenumber/\inserttotalframenumber\hspace*{5pt}}
 	}
-\usemintedstyle{tango}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\setlength{\belowdisplayskip}{0pt}
+\setlength{\abovedisplayskip}{0pt}
+\def\layersep{2.5cm}
