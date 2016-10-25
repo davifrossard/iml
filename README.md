@@ -8,7 +8,8 @@ The repository has the course slides and sample codes for Introduction to Machin
 2. [Linear Regression](02_LinReg/linreg.pdf) [[Sample Code](02_LinReg/Sample_Code)]
 3. [TensorFlow](03_TensorFlow/TensorFlow.pdf) [[Sample Code](03_TensorFlow/Sample_Code)]
 4. [Logistic Regression and Neural Networks](04_LogRegAndNN/LogRegAndNN.pdf) [[Sample Code](04_LogRegAndNN/Sample_Code)]
-4. [Training Neural Networks](05_TrainingNeuralNets/TrainingNeuralNets.pdf)
+5. [Training Neural Networks](05_TrainingNeuralNets/TrainingNeuralNets.pdf)
+6. [Convolutional Neural Networks](06_ConvNets/ConvNets.pdf)
 
 ## Slides Content
 Some slides contain animated content, in order to visualize them you must use [Adobe Reader](https://get.adobe.com/br/reader/)
