@@ -10,6 +10,7 @@ The repository has the course slides and sample codes for Introduction to Machin
 4. [Logistic Regression and Neural Networks](04_LogRegAndNN/LogRegAndNN.pdf) [[Sample Code](04_LogRegAndNN/Sample_Code)]
 5. [Training Neural Networks](05_TrainingNeuralNets/TrainingNeuralNets.pdf)
 6. [Convolutional Neural Networks](06_ConvNets/ConvNets.pdf)
+7. [How Convolutional Neural Networks See](07_HowConvNetsSee/HowConvNetsSee.pdf)  [[Sample Code](07_HowConvNetsSee/Sample_Code)]
 
 ## Slides Content
 Some slides contain animated content, in order to visualize them you must use [Adobe Reader](https://get.adobe.com/br/reader/)
