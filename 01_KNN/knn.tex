@@ -1,6 +1,5 @@
 \input{../slides_header.tex}
 
-
 \begin{document}
 
 
@@ -35,7 +34,7 @@
 \subsection{The Problem}
 \begin{frame}{The Problem}
 	\begin{itemize}
-		\item Given a set of labelled data (\textbf{training set}), predict the labels of a set of unlabelled data (\textbf{test set}). 
+		\item Given a set of labelled data (\textbf{training set}), predict the labels of a set of unlabelled data (\textbf{test set}).
 		\item Example:
 		\begin{itemize}
 			\item Training set:
@@ -101,16 +100,16 @@
 		\vspace{5px}
 		\KwIn{Training set $T$ \newline
 			  Test set $S$}
-		
+
 		\vspace{10px}
-		
+
 		\ForEach{$s_i \in S$}{
 			\ForEach{$t_i \in T$}{
 				Compute distance $d(s_i,t_i)$
 			}
 			Sort($T$, key = $d(s_i,t_i)$) \\
 			$s_i.label$ = max($T[:k].label$, key = count)
-		} 
+		}
 	\end{algorithm}
 \end{frame}
 
@@ -165,7 +164,7 @@
 		\item How do we determine the optimal K for our dataset?
 		\begin{itemize}
 			\item Could try different values and see which works best for the test set.
-			\item Problem: The selected K will be best for the \textit{particular} test set. So it's an overestimate of how well we will perform in new data. 
+			\item Problem: The selected K will be best for the \textit{particular} test set. So it's an overestimate of how well we will perform in new data.
 		\end{itemize}
 		\item \textbf{Validation Set}: Create a set separate from training and test used to tune \textbf{hyperparameters} such as \textit{K}.
 		\begin{itemize}

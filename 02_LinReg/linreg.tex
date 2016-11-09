@@ -139,7 +139,7 @@
 \begin{frame}{Gradient Descent in Linear Regression}
 	\begin{itemize}
 		\item To learn our linear regression model we need to set the values of $w$ and $b$ in $\boldsymbol{y} = w.\boldsymbol{x} + b$ that minimize the average error.
-		\item If we use L2-Distance, our error becomes: 
+		\item If we use L2-Distance, our error becomes:
 	\end{itemize}
 	\begin{gather*}
 	E(x,w,b) = \dfrac{1}{n}\sum_{i = 0}^n \Big(y_i - (wx_i + b)\Big)^2
@@ -225,13 +225,13 @@
 		\vspace{5px}
 		\KwIn{Function $E(x, \boldsymbol{w})$ \newline
 			  Learning rate $\alpha$}
-		
+
 		\vspace{10px}
-		
+
 		\Repeat{stopping condition}{
 			Select random mini-batch $x'$\\
 			$\boldsymbol{w} \leftarrow \boldsymbol{w} - \alpha \frac{\partial E(x',\boldsymbol{w})}{\partial \boldsymbol{w}}$ \\
-		} 
+		}
 	\end{algorithm}
 \end{frame}
 
@@ -296,7 +296,7 @@
 		\item How high should our learning rate ($\alpha$) be? Could you propose a way to reduce its sensitivity?
 		\item Do we need to use our entire dataset at each gradient descent step?
 		\item Suppose we want to predict a person's longevity and have the following data: Yearly health checkups, tobacco consumption, blood pressure levels, physical activity and university degree. Should we use all the data that is available to us?
-		\item Can we perform linear regression from a strictly probabilistic perspective? 
+		\item Can we perform linear regression from a strictly probabilistic perspective?
 	\end{enumerate}
 \end{frame}
 

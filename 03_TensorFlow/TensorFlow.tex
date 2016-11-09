@@ -1,5 +1,5 @@
 \input{../slides_header.tex}
-
+\usepackage{minted}
 
 \begin{document}
 
@@ -99,17 +99,17 @@
 	fontsize=\scriptsize,
 	framesep=2mm,
 	frame=lines,]{python}
-	
+
 	import tensorflow as tf
-	
+
 	a = tf.Variable(1)
 	b = tf.Variable(3)
-	
+
 	c = a + b
 	d = a * b
-	
+
 	e = c + d
-	
+
 	sess = tf.InteractiveSession()
 	init = tf.initialize_all_variables()
 	init.run()
@@ -135,17 +135,17 @@
 	fontsize=\scriptsize,
 	framesep=2mm,
 	frame=lines,]{python}
-	
+
 	import tensorflow as tf
-	
+
 	a = tf.placeholder(tf.float32, [None])
 	b = tf.placeholder(tf.float32, [None])
-	
+
 	c = a + b
 	d = a * b
-	
+
 	e = c + d
-	
+
 	sess = tf.InteractiveSession()
 	init = tf.initialize_all_variables()
 	init.run()
@@ -164,20 +164,20 @@
 	fontsize=\scriptsize,
 	framesep=2mm,
 	frame=lines,]{python}
-	
+
 	import numpy as np
 	import matplotlib.pyplot as plt
 	import tensorflow as tf
-	
+
 	# Generate Mock Data
 	data_x = np.linspace(1, 8, 100)[:, np.newaxis]
 	data_y = np.polyval([1, -14, 59, -70], data_x) + 1.5 * np.sin(data_x) + np.random.randn(100, 1)
 	# --------
-	
+
 	model_order = 5
 	data_x = np.power(data_x, range(model_order))
 	data_x /= np.max(data_x, axis=0) # Normalize inputs
-	
+
 	order = np.random.permutation(len(data_x))
 	portion = 0.2*len(data_x)
 	test_x = data_x[order[:portion]]
@@ -206,15 +206,15 @@
 	frame=lines,
 	firstnumber=20,
 	tabsize=4]{python}
-	
+
 	# Input and output placeholders
 	inputs = tf.placeholder(tf.float32, [None, model_order])
 	outputs = tf.placeholder(tf.float32, [None, 1])
-	
+
 	# Model definition
 	W = tf.Variable(tf.zeros([model_order, 1], dtype=tf.float32))
 	y = tf.matmul(inputs, W)
-	
+
 	# Optimizer settings
 	learning_rate = tf.Variable(0.5, trainable=False)
 	cost_op = tf.reduce_mean(tf.pow(y-outputs, 2))
@@ -243,11 +243,11 @@
 	frame=lines,
 	firstnumber=33,
 	tabsize=4]{python}
-	
+
 	epochs = 1
 	last_cost = 0
 	max_epochs = 50000
-	
+
 	sess = tf.Session() # Create TensorFlow session
 	print "Beginning Training"
 	with sess.as_default():
@@ -265,9 +265,9 @@
 					print "Converged."
 					break
 				last_cost = cost
-			
+
 			epochs += 1
-	
+
 		print "w =", W.eval()
 		print "Test Cost =", cost_op.eval({inputs: test_x, outputs: test_y})
 	\end{minted}
@@ -284,7 +284,7 @@
 	frame=lines,
 	firstnumber=59,
 	tabsize=4]{python}
-	
+
 	y_model = np.polyval(w[::-1], np.linspace(0,1,200))
 	plt.plot(np.linspace(0,1,200), y_model, c='g', label='Model')
 	plt.scatter(train_x[:,1], train_y, c='b', label='Train Set')

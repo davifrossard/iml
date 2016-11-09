@@ -55,10 +55,15 @@
 \setbeamertemplate{navigation symbols}{}
 
 \setbeamerfont{footline}{size=\fontsize{6}{0}\selectfont}
-\setbeamercolor{footline}{fg=black!50}
+\setbeamercolor{footline}{fg=black!50,bg=lightgray}
+\setbeamercolor{footlinecolor}{fg=white,bg=DeepSkyBlue4}
 \setbeamertemplate{footline}{
-	\parbox{\paperwidth}{\hspace*{5pt}\url{http://www.cs.toronto.edu/~frossard}\hfill
-		\insertframenumber/\inserttotalframenumber\hspace*{5pt}}
+	\begin{beamercolorbox}[sep=0.02cm,wd=\paperwidth]{footlinecolor}
+		\hspace*{5pt}\url{http://www.cs.toronto.edu/~frossard}\hfill
+			\insertframenumber/\inserttotalframenumber\hspace*{5pt}
+	\end{beamercolorbox}%
+
+
 	}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

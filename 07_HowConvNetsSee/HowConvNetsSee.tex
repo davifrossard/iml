@@ -1,0 +1,108 @@
+\input{../slides_header.tex}
+
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\scshape Introduction}
+\begin{frame}
+	\title{Introduction to Machine Learning}
+	\subtitle{How Convolutional Neural Networks See}
+	\author{
+		Davi Frossard\\
+		{\it Federal University of Espirito Santo \\ University of Toronto}\\
+	}
+	\date{
+		\vspace{-2em}\\
+		\includegraphics[width=0.6\columnwidth]{deepdream.jpg}\\[-1ex]
+		\\
+		\today
+	}
+	\titlepage
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Summary}
+	\tableofcontents
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Introduction}
+	\begin{itemize}
+		\item Often neural networks are seen as black boxes.
+		\item We may want to figure out what they are doing internally.
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\scshape Filters}
+\begin{frame}{Filters}
+	\begin{itemize}
+		\item The most straightforward way to understand a ConvNet is by plotting its filters.
+		\item We can easily extract the first
+		\item<1-> Code:
+		\begin{center}
+			{\smaller \texttt{python visualize\_weights.py}}
+		\end{center}
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Filters}
+	\begin{center}
+		\includegraphics[width=\columnwidth,trim={0cm 0cm 0 1cm},clip]{weights.eps}
+	\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Filters}
+	\begin{itemize}
+		\item Unsurprisingly, they extract very simple features from the images.
+		\item Plotting the weights from the upper layers is possible, but becomes increasingly boring.
+		\item We want a general way of visualizing the ConvNet.
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\scshape Data Driven}
+\begin{frame}{Data Driven}
+	\begin{itemize}
+		\item The data driven approach consists in using lots of data to infer the network behavior.
+		\item We can feed a large dataset to a model and keep track of the images that maximally activate some neuron.
+		\item This gives us a sense of what the neuron is looking for.
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Data Driven}
+	\begin{center}
+		\includegraphics[width=\columnwidth]{pool5max.jpeg}\\[-1ex]
+		{\tiny Credit: {\itshape \url{http://cs231n.github.io/understanding-cnn/}}}
+	\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Data Driven}
+	\begin{itemize}
+		\item Additionally, we can slide an occlusion window through the input image and keep track of how the ground truth label score behaves.
+		\item We then plot a heatmap and determine the network's region of interest.
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Data Driven}
+	\begin{center}
+		\includegraphics[width=\columnwidth]{occlude.jpeg}\\[-1ex]
+		{\tiny Credit: {\itshape \url{http://cs231n.github.io/understanding-cnn/}}}
+	\end{center}
+\end{frame}
+
+\end{document}
