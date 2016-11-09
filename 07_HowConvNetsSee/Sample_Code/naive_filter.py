@@ -22,10 +22,7 @@ if __name__ == "__main__":
     imgs = tf.placeholder(tf.float32, [None, 224, 224, 3])
     vgg = vgg16(imgs, 'vgg16_weights.npz', sess)
     img = np.random.uniform(size=(224, 224, 3)) + 100.0
-    img = render_naive(vgg.probs[:,195], imgs, img, sess)
+    img = render_naive(vgg.conv4_1[:,:,:,370], imgs, img, sess)
     plt.imshow(img)
     plt.axis('off')
-    plt.title("French Bulldog")
-    plt.savefig('french_bulldog.eps')
     plt.show()
-    imsave('french_bulldog.jpg', img)

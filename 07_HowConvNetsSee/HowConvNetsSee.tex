@@ -105,4 +105,172 @@
 	\end{center}
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\scshape Gradient}
+\begin{frame}{Gradient}
+	\begin{itemize}
+		\item A numerical alternative to the data driven approach is to use gradients.
+		\item If we take the gradient of an output neuron with respect to the input image,
+		we will be seeing which neurons need to change the least to affect the output the most.
+		\item Because the softmax outputs take into account not only the positive evidence but also all the negative evidence, looking at the unscaled logits may give a better view.
+		\item<2-> Code:
+		\begin{center}
+			{\smaller \texttt{python gradient.py}}
+		\end{center}
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Gradient}
+	\begin{center}
+		\includegraphics[width=\columnwidth]{gradients.eps}
+	\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Gradient}
+	\begin{itemize}
+		\item The gradients look convoluted, roughly showing which pixels affect the output the most.
+		\item One issue is that at each gradient step both the neurons positively and negatively correlated with the output are taken into account.
+		\item This makes it harder to visualize what the network is doing.
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\scshape Guided Backpropagation}
+\begin{frame}{Guided Backpropagation}
+	\begin{itemize}
+		\item To extract different gradients for the positively and negatively correlated neurons we have Guided Backpropagation.
+		\item Instead of using the actual gradient of the neurons, we zero out the entries where either the incoming our outgoing gradient is negative.
+		\item This effectively prevents the backward flow of data from neurons which decrease the activation of the layer we're looking at.
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Guided Backpropagation}
+	\begin{itemize}
+		\item If we have an error signal $\delta_i$, its backward flow through a ReLU layer will be:
+		\begin{gather*}
+			\delta_{i-1} = \delta_i \cdot [x>0]
+		\end{gather*}
+		\item Guided backpropagation proposes we only retain positive signals, therefore:
+		\begin{gather*}
+			\delta_{i-1} = \delta_i \cdot [x>0] \cdot [\delta_i > 0]
+		\end{gather*}
+		\item<2-> Code:
+		\begin{center}
+			{\smaller \texttt{python guided\_backpropagation.py}}
+		\end{center}
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Guided Backpropagation}
+	\begin{center}
+		\includegraphics[width=\columnwidth]{guided_backprop.eps}
+	\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\scshape Gradient Ascent}
+\begin{frame}{Gradient Ascent}
+	\begin{itemize}
+		\item Following the idea of using gradients, we could actually "train" the image with this information and maximize a certain activation.
+		\item We start with a plain image (with some noise for symmetry breaking) and perform gradient ascent.
+		\item<2-> Code:
+		\begin{center}
+			{\smaller \texttt{python naive\_filter.py}}
+		\end{center}
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Gradient Ascent}
+	\begin{center}
+		\includegraphics[width=\columnwidth]{naive_filter.eps}
+	\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\scshape Deep Dream}
+\begin{frame}{Deep Dream}
+	\begin{itemize}
+		\item With clever modifications to the previous approach, we can tune an image to
+		look more and more like some objects that were \textit{kind of} detected at first.
+		\begin{itemize}
+			\item Select a layer and \textit{make the rich get richer.}
+			\item Update the input such that the neurons with the highest activations get higher.
+			\item This can be achieved by multiplying the gradient by the normalized activation map.
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Deep Dream}
+	\begin{itemize}
+		\item As it is, this wouldn't produce visually pleasing images.
+		\begin{itemize}
+			\item The gradient would keep being applied on the same areas over and over again. Creating saturated features and not much diversity.
+			\item We are also constrained to use images only as big as the ConvNet input.
+		\end{itemize}
+		\item We can solve this by applying the gradient over random tiles of the image.
+		\begin{itemize}
+			\item Sample a tile of the image with the same size as the ConvNet input and backpropagate over that region.
+			\item Through the iterations, this discretization gets smoothed.
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Deep Dream}
+	\begin{itemize}
+		\item We can make the output extra nicer by "training" over different scales (octaves).
+		\begin{itemize}
+			\item Generate multiple resolutions of the same image and accumulate the results over each octave.
+		\end{itemize}
+		\item<2-> Code:
+		\begin{center}
+			{\smaller \texttt{python deep\_dream.py}}
+		\end{center}
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Deep Dream}
+	\begin{center}
+		\includegraphics[width=0.9\columnwidth]{../Sample_Code/sky.jpg}
+	\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Deep Dream}
+	\begin{center}
+		\includegraphics[width=0.9\columnwidth]{dd_sky.jpg}
+	\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Addendum}
+	\begin{itemize}
+		\item We can use gradient ascent to create images that look nothing like a class, yet score highly (99.9\% certainty).
+	\end{itemize}
+	\begin{center}
+		\includegraphics[width=0.85\columnwidth]{boston_terrier.eps}
+	\end{center}
+\end{frame}
+
 \end{document}
