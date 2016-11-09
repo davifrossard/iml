@@ -41,8 +41,8 @@
 \begin{frame}{Filters}
 	\begin{itemize}
 		\item The most straightforward way to understand a ConvNet is by plotting its filters.
-		\item We can easily extract the first
-		\item<1-> Code:
+		\item We can easily extract the first layer weights.
+		\item<2-> Code:
 		\begin{center}
 			{\smaller \texttt{python visualize\_weights.py}}
 		\end{center}
@@ -184,6 +184,7 @@
 	\begin{itemize}
 		\item Following the idea of using gradients, we could actually "train" the image with this information and maximize a certain activation.
 		\item We start with a plain image (with some noise for symmetry breaking) and perform gradient ascent.
+		\item This effectively allows us to visualize what that neuron is trying to match.
 		\item<2-> Code:
 		\begin{center}
 			{\smaller \texttt{python naive\_filter.py}}
