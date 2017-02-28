@@ -12,6 +12,9 @@ The repository has the course slides and sample codes for Introduction to Machin
 6. [Convolutional Neural Networks](06_ConvNets/ConvNets.pdf)
 7. [How Convolutional Neural Networks See](07_HowConvNetsSee/HowConvNetsSee.pdf)  [[Sample Code](07_HowConvNetsSee/Sample_Code)]
 
+## Extras
+0. [Tracking](Extra/Tracking/Tracking.pdf)
+
 ## Slides Content
 Some slides contain animated content, in order to visualize them you must use [Adobe Reader](https://get.adobe.com/br/reader/)
 
